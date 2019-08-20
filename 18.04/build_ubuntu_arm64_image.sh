@@ -66,7 +66,7 @@ if !(test -d $(pwd)/rpi64/firmware/); then
 		exit 1
 	fi
 
-	cd ../../../
+	cd ../
 fi
 
 # make sure we have kpartx on Ubuntu
