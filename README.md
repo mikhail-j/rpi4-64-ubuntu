@@ -13,7 +13,7 @@ Ubuntu Server 18.04 LTS (Bionic Beaver) ARM64 for the Raspberry Pi 4
 git clone https://github.com/mikhail-j/rpi4-64-ubuntu
 ```
 
-## Compiling the Linux kernel from `raspberrypi/linux`
+## Compiling the Linux kernel from [`raspberrypi/linux`](https://github.com/raspberrypi/linux/)
 Run `build_ubuntu_arm64_kernel.sh` from within the folder `rpi4-64/18.04`.
 ```sh
 sh ./build_ubuntu_arm64_kernel.sh
