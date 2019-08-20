@@ -32,7 +32,7 @@ sudo apt-get install bison flex
 # check if arm64 toolchain directory exists
 ARM64_TOOLCHAIN=$(pwd)/rpi64/arm64_toolchain/aarch64
 if !(test -d $ARM64_TOOLCHAIN); then
-	mkdir -p rpi4/arm64_toolchain/aarch64
+	mkdir -p rpi64/arm64_toolchain/aarch64
 fi
 
 # change directory to 'rpi64/arm64_toolchain/'
