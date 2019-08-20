@@ -32,6 +32,12 @@ if !(test -d $(pwd)/rpi64/linux/build); then
 	exit 1
 fi
 
+# check if Raspberry Pi 4 `config.txt` exists in current directory
+if !(test -e "config.txt"); then
+	echo "error: expected 'config.txt' in current directory!"
+	exit 1
+fi
+
 # check if armstub8-gic.bin is built
 if !(test -d $(pwd)/rpi64/tools/); then
 	cd rpi64
