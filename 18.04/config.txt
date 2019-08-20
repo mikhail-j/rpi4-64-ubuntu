@@ -60,8 +60,13 @@ dtparam=audio=on
 #dtoverlay=vc4-fkms-v3d
 #max_framebuffers=2
 arm_64bit=1
-enable_gic=1
-armstub=armstub8-gic.bin
+
+# Enable ARMv8 GIC support using ARMv8 stubs
+#
+# Note: `fixup4*.dat` and `start4*.elf` after commit `025759b8634c2f8df35203be02c19a0633f1cec1`
+# (https://github.com/raspberrypi/firmware) do not need ARMv8 stubs
+#enable_gic=1
+#armstub=armstub8-gic.bin
 
 [all]
 #dtoverlay=vc4-fkms-v3d
