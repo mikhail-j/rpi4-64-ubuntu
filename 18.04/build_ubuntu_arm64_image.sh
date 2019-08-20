@@ -38,24 +38,6 @@ if !(test -e "config.txt"); then
 	exit 1
 fi
 
-# check if armstub8-gic.bin is built
-if !(test -d $(pwd)/rpi64/tools/); then
-	cd rpi64
-	git clone https://github.com/raspberrypi/tools/
-	cd tools/armstubs
-
-	env PATH=$ARM64_TOOLCHAIN/bin:$PATH make armstub8-gic.bin
-	if test $? -ne 0; then
-		# remove git repository 'raspberrypi/tools' and exit
-		cd ../../
-		rm -rf tools
-
-		exit 1
-	fi
-
-	cd ../../../
-fi
-
 # check if raspberrypi/firmware repository has been cloned
 if !(test -d $(pwd)/rpi64/firmware/); then
 	cd rpi64
@@ -130,7 +112,6 @@ sudo mount /dev/mapper/"$LOOP_DEVICE"p1 boot
 sudo cp -avf $(pwd)/rpi64/linux/build/install/lib/modules/$KERNEL_VERSION root/lib/modules/
 
 sudo cp $(pwd)/rpi64/linux/build/arch/arm64/boot/Image $(pwd)/boot/kernel8.img
-sudo cp $(pwd)/rpi64/tools/armstubs/armstub8-gic.bin $(pwd)/boot/
 sudo cp $(pwd)/rpi64/firmware/boot/*.dat $(pwd)/boot/
 sudo cp $(pwd)/rpi64/firmware/boot/*.elf $(pwd)/boot/
 sudo cp $(pwd)/rpi64/firmware/boot/bootcode.bin $(pwd)/boot/
