@@ -43,7 +43,15 @@ if !(test -d $(pwd)/rpi64/tools/); then
 	cd rpi64
 	git clone https://github.com/raspberrypi/tools/
 	cd tools/armstubs
+
 	env PATH=$ARM64_TOOLCHAIN/bin:$PATH make armstub8-gic.bin
+	if test $? -ne 0; then
+		# remove git repository 'raspberrypi/tools' and exit
+		cd ../../
+		rm -rf tools
+
+		exit 1
+	fi
 
 	cd ../../../
 fi
@@ -52,34 +60,66 @@ fi
 if !(test -d $(pwd)/rpi64/firmware/); then
 	cd rpi64
 	git clone https://github.com/raspberrypi/firmware/
+	if test $? -ne 0; then
+		# remove git repository 'raspberrypi/firmware' and exit
+		rm -rf firmware
+		exit 1
+	fi
 
 	cd ../../../
 fi
 
 # make sure we have kpartx on Ubuntu
 sudo apt-get install kpartx
+if test $? -ne 0; then
+	exit $?
+fi
 
 LATEST_BIONIC=$(curl http://cdimage.ubuntu.com/ubuntu/releases/bionic/release/ | grep "arm64+raspi3.img.xz\"" | head -n 1 | cut -d '"' -f 2)
 
 if !(test -e $LATEST_BIONIC); then
 	wget http://cdimage.ubuntu.com/ubuntu/releases/bionic/release/$LATEST_BIONIC
+	if test $? -ne 0; then
+		exit $?
+	fi
 	curl http://cdimage.ubuntu.com/ubuntu/releases/bionic/release/SHA256SUMS | grep arm64+raspi3 > $LATEST_BIONIC.sha256
+	if test $? -ne 0; then
+		exit $?
+	fi
 fi
 
 sha256sum -c "$LATEST_BIONIC".sha256
+if test $? -ne 0; then
+	exit $?
+fi
 
 MODIFIED_IMAGE=$(echo "$LATEST_BIONIC" | cut -d '+' -f 1)+rpi4.img
+
 xzcat $LATEST_BIONIC > $MODIFIED_IMAGE
+if test $? -ne 0; then
+	exit $?
+fi
 
 if !(test -d root); then
 	mkdir root
+	if test $? -ne 0; then
+		exit $?
+	fi
 fi
 
 if !(test -d boot); then
 	mkdir boot
+	if test $? -ne 0; then
+		exit $?
+	fi
 fi
 
 LOOP_DEVICE=$(sudo kpartx -av $MODIFIED_IMAGE | head -n 1 | awk ' { print $3 } ' | cut -d 'p' -f 1,2)
+
+echo "$LOOP_DEVICE" | grep "loop" && echo "loop device mapped!"
+if test $? -ne 0; then
+	exit $?
+fi
 echo "loop device: $LOOP_DEVICE"
 
 KERNEL_VERSION=$(cat rpi64/linux/build/include/generated/utsrelease.h | awk ' { gsub(/"/,""); print $3 } ')

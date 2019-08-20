@@ -37,43 +37,115 @@ fi
 
 # change directory to 'rpi64/arm64_toolchain/'
 cd rpi64/arm64_toolchain/
+if test $? -ne 0; then
+	exit $?
+fi
+
 wget https://ftp.gnu.org/gnu/binutils/binutils-2.32.tar.bz2
+if test $? -ne 0; then
+	exit $?
+fi
 
 # change directory to 'rpi64/arm64_toolchain/aarch64/'
 cd $ARM64_TOOLCHAIN
 tar -xjf ../binutils-2.32.tar.bz2
+if test $? -ne 0; then
+	exit $?
+fi
 
 cd binutils-2.32
+if test $? -ne 0; then
+	exit $?
+fi
 ./configure --prefix=$ARM64_TOOLCHAIN --target=aarch64-linux-gnu
+if test $? -ne 0; then
+	exit $?
+fi
 make -j $THREAD_COUNT
+if test $? -ne 0; then
+	exit $?
+fi
 make check
+if test $? -ne 0; then
+	exit $?
+fi
 make install
+if test $? -ne 0; then
+	exit $?
+fi
 
 # change directory to 'rpi64/arm64_toolchain/'
 cd ../../
+
 wget https://ftp.gnu.org/gnu/gcc/gcc-9.2.0/gcc-9.2.0.tar.xz
+if test $? -ne 0; then
+	exit $?
+fi
+
 cd aarch64
+
 tar -xJf ../gcc-9.2.0.tar.xz
+if test $? -ne 0; then
+	exit $?
+fi
 
 cd gcc-9.2.0
+if test $? -ne 0; then
+	exit $?
+fi
 ./configure --prefix=$ARM64_TOOLCHAIN --target=aarch64-linux-gnu --with-newlib --without-headers \
 --disable-shared --disable-threads --disable-libssp --disable-decimal-float --disable-libquadmath \
 --disable-libvtv --disable-libgomp --disable-libatomic --enable-languages=c,c++,fortran
+if test $? -ne 0; then
+	exit $?
+fi
 make all-gcc -j $THREAD_COUNT
+if test $? -ne 0; then
+	exit $?
+fi
 make -j $THREAD_COUNT check
+if test $? -ne 0; then
+	exit $?
+fi
 make install-gcc
+if test $? -ne 0; then
+	exit $?
+fi
 
 # change directory to 'rpi64'
 cd ../../../
 
 # clone 'raspberrypi/linux' git repository and compile the 'rpi-4.19.y' branch of the Linux kernel
 git clone https://github.com/raspberrypi/linux.git
+if test $? -ne 0; then
+	exit $?
+fi
 cd linux
+if test $? -ne 0; then
+	exit $?
+fi
 git checkout rpi-4.19.y
+if test $? -ne 0; then
+	exit $?
+fi
 
 mkdir build
+if test $? -ne 0; then
+	exit $?
+fi
+
 env PATH=$ARM64_TOOLCHAIN/bin:$PATH make O=build ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig
+if test $? -ne 0; then
+	exit $?
+fi
 env PATH=$ARM64_TOOLCHAIN/bin:$PATH make -j $THREAD_COUNT O=build ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+if test $? -ne 0; then
+	exit $?
+fi
 
 KERNEL_VERSION=$(cat build/include/generated/utsrelease.h | awk ' { gsub(/"/,""); print $3 } ')
+
 sudo make -j $THREAD_COUNT O=build DEPMOD=echo MODLIB=install/lib/modules/${KERNEL_VERSION} INSTALL_FW_PATH=install/lib/firmware modules_install
+if test $? -ne 0; then
+	exit $?
+fi
