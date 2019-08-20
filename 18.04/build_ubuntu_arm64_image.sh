@@ -142,8 +142,8 @@ sudo cp -R $(pwd)/rpi64/linux/build/arch/arm64/boot/dts/overlays/ $(pwd)/boot/
 sudo cp -R $(pwd)/config.txt $(pwd)/boot/
 
 
-# sleep for 5 seconds to allow for unmounting, otherwise loop device is busy
-sleep 5
+# sleep for 10 seconds to allow for unmounting, otherwise loop device is busy
+sleep 10
 
 sudo umount root
 sudo umount boot
