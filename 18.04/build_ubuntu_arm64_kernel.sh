@@ -103,10 +103,11 @@ make all-gcc -j $THREAD_COUNT
 if test $? -ne 0; then
 	exit $?
 fi
+
 make -j $THREAD_COUNT check
-if test $? -ne 0; then
-	exit $?
-fi
+# `make check` is expected to fail for GCC
+# This is due to the `dejagnu` dependency for `runtest`.
+
 make install-gcc
 if test $? -ne 0; then
 	exit $?
