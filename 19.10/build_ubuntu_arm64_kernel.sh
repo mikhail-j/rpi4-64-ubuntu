@@ -116,8 +116,8 @@ fi
 # change directory to 'rpi64'
 cd ../../../
 
-# clone 'raspberrypi/linux' git repository and compile the 'rpi-4.19.y' branch of the Linux kernel
-git clone https://github.com/raspberrypi/linux.git
+# clone Ubuntu Eoan Ermine's linux kernel git repository and compile the 'raspi2' branch of the Linux kernel
+git clone https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/eoan/ linux
 if test $? -ne 0; then
 	exit $?
 fi
@@ -125,7 +125,7 @@ cd linux
 if test $? -ne 0; then
 	exit $?
 fi
-git checkout rpi-4.19.y
+git checkout raspi2
 if test $? -ne 0; then
 	exit $?
 fi
